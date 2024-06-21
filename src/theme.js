@@ -20,8 +20,7 @@ const theme = {
     },
     fontWeights: {
       normal: '400',
-      bold: '500',
-      bolder: '700',
+      bold: '700',
     },
     width: {
         fullWidth: '100%',

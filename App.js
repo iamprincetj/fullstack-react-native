@@ -6,6 +6,8 @@ import { ApolloProvider } from '@apollo/client';
 import createApolloClient from './src/utils/apolloclient';
 import AuthStorage from './src/utils/authStorage';
 import AsyncStorageContext from './src/context/AsyncStorageContext';
+import RepoViewProvider from './src/reducer/SelectedRepoViewReducer';
+import SearchedProvider from './src/reducer/SearchedReducer';
 
 const authStorage = new AuthStorage();
 
@@ -18,7 +20,11 @@ export default function App() {
       <NativeRouter>
           <ApolloProvider client={client}>
               <AsyncStorageContext.Provider value={authStorage}>
-                <Main />
+                  <RepoViewProvider>
+                      <SearchedProvider>
+                          <Main />
+                      </SearchedProvider>
+                  </RepoViewProvider>
               </AsyncStorageContext.Provider>
           </ApolloProvider>
       </NativeRouter>

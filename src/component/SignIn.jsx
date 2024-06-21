@@ -9,6 +9,22 @@ import { useNavigate } from 'react-router-native';
 const SignIn = () => {
     const [ signIn ] = useSignIn();
     const navigate = useNavigate();
+    const onSubmit = async (values) => {
+        const { username, password } = values;
+
+        try {
+            await signIn({ username, password });
+            navigate('/');
+        } catch (e) {
+            console.log(e);
+        }
+    };
+  return (
+    <SignInContainer onSubmit={onSubmit} />
+  );
+};
+
+export const SignInContainer = ({ onSubmit }) => {
     const validationSchema = yup.object().shape({
         username: yup
             .string()
@@ -22,76 +38,77 @@ const SignIn = () => {
         username: '',
         password: '',
     };
-    const onSubmit = async (values) => {
-        const { username, password } = values;
-
-        try {
-            await signIn({ username, password });
-            navigate('/');
-        } catch (e) {
-            console.log(e);
-        }
-    };
     const formik = useFormik({
         initialValues,
         validationSchema,
         onSubmit,
     });
-  return (
-    <View style={{ padding: 10, backgroundColor: '#fff' }}>
-        <View style={styles.inputFieldContainer}>
-            <TextInput
-                placeholder='Username'
-                value={formik.values.username}
-                onChangeText={formik.handleChange('username')}
-                style={[styles.inputField, { borderColor: formik.touched.username && formik.errors.username && theme.colors.error }]}
-            />
-            { formik.touched.username && formik.errors.username && (
-                <Text style={{ color: '#d73a4a' }}> { formik.errors.username } </Text>
-            ) }
-        </View>
-        <View style={styles.inputFieldContainer}>
-            <TextInput
-                placeholder='Password'
-                value={formik.values.password}
-                onChangeText={formik.handleChange('password')}
-                secureTextEntry
-                style={[styles.inputField, { borderColor: formik.touched.password && formik.errors.password && theme.colors.error }]}
-            />
-                { formik.touched.password && formik.errors.password && (
-                <Text style={{ color: theme.colors.error }}> { formik.errors.password } </Text>
-            ) }
-        </View>
+    return (
+        <View style={inputStyles.container}>
+            <View style={inputStyles.inputFieldContainer}>
+                <TextInput
+                    placeholder='Username'
+                    value={formik.values.username}
+                    onChangeText={formik.handleChange('username')}
+                    style={[inputStyles.inputField, { borderColor: formik.touched.username && formik.errors.username && theme.colors.error }]}
+                />
+                { formik.touched.username && formik.errors.username && (
+                    <Text style={{ color: '#d73a4a' }}> { formik.errors.username } </Text>
+                ) }
+            </View>
+            <View style={inputStyles.inputFieldContainer}>
+                <TextInput
+                    placeholder='Password'
+                    value={formik.values.password}
+                    onChangeText={formik.handleChange('password')}
+                    secureTextEntry
+                    style={[inputStyles.inputField, { borderColor: formik.touched.password && formik.errors.password && theme.colors.error }]}
+                />
+                    { formik.touched.password && formik.errors.password && (
+                    <Text style={{ color: theme.colors.error }}> { formik.errors.password } </Text>
+                ) }
+            </View>
 
-        <Pressable style={styles.buttonField} onPress={formik.handleSubmit}>
-            <Text fontWeight='bold' style={{ color: '#fff' }}> Sign in </Text>
-        </Pressable>
-        
-    </View>
-  );
+            <Pressable style={inputStyles.buttonField} onPress={formik.handleSubmit}>
+                <Text fontWeight='bold' style={inputStyles.buttonText}> Sign in </Text>
+            </Pressable>
+            
+        </View>
+    );
 };
 
-const styles = StyleSheet.create({
+export const inputStyles = StyleSheet.create({
+    container: {
+        padding: 10,
+        backgroundColor: '#fff',
+    },
     inputFieldContainer: {
-        marginBottom: 10,
+        marginBottom: 15,
     },
     inputField: {
         width: theme.width.fullWidth,
-        height: '3rem',
-        border: '1px solid black',
-        padding: '10px',
+        height: 60,
+        borderColor: 'black',
+        borderWidth: 1,
+        padding: 10,
         margin: 'auto',
         borderRadius: 5,
+        opacity: 0.7,
     },
     buttonField: {
         backgroundColor: theme.colors.primary,
         width: theme.width.fullWidth,
-        height: '3rem',
-        borderRadius: 5,
+        height: 60,
+        borderRadius: 3,
         marginBottom: 10,
-        lineHeight: '3rem',
+        lineHeight: 48,
         alignItems: 'center',
         justifyContent: 'center',
+        fontWeight: theme.fontWeights.bold,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 20
     },
 });
 
